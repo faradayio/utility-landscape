@@ -20,6 +20,7 @@ dropdb makeutils
 createdb makeutils
 psql makeutils -c 'CREATE EXTENSION IF NOT EXISTS postgis'
 psql makeutils -c 'CREATE EXTENSION IF NOT EXISTS postgis_topology'
+psql makeutils -c 'CREATE EXTENSION pg_trgm;'
 
 # Add a starter table for utility data
 psql makeutils -c 'DROP TABLE IF EXISTS utilities'
@@ -78,7 +79,7 @@ rm -r intake
 echo 'dividing by state'
 psql makeutils -f sql/state_split.sql
 echo 'converting to geojson'
-ogr2ogr -f "GeoJSON" geojson_territories PG:"host=127.0.0.1 dbname=makeutils"
+sh togeojson.sh
 
 # All done!
 echo 'all done!'

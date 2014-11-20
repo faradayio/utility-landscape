@@ -169,13 +169,6 @@ ALTER TABLE utility_territories
 	ADD COLUMN type text,
 	ADD COLUMN state character varying(2);
 
-SELECT AddGeometryColumn ('public','utility_territories','the_geom_webmercator',3857,'GEOMETRY',2);
-
--- Update with necessary utility data
-
-UPDATE utility_territories
-	SET the_geom_webmercator = ST_Transform(the_geom,3857);
-
 UPDATE utility_territories u1
 	SET name = u2.uname,
 	    state = u2.state,
@@ -193,8 +186,6 @@ CREATE INDEX idx_id_utility_territories ON utility_territories USING btree (id);
 CREATE INDEX idx_name_utility_territories ON utility_territories USING btree (name);
 -- Name: idx_the_geom; Type: INDEX; Schema: public; Owner: -; Tablespace:
 CREATE INDEX idx_the_geom ON utility_territories USING gist (the_geom);
--- Name: idx_the_geom_webmercator_utility_territories; Type: INDEX; Schema: public; Owner: -; Tablespace:
-CREATE INDEX idx_the_geom_webmercator_utility_territories ON utility_territories USING gist (the_geom_webmercator);
 -- Name: idx_type_utility_territories; Type: INDEX; Schema: public; Owner: -; Tablespace:
 CREATE INDEX idx_type_utility_territories ON utility_territories USING btree (type);
 
