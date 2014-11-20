@@ -18,11 +18,8 @@ cd intake
 # Create the DB and get it ready for spatial awesomness
 dropdb makeutils
 createdb makeutils
-psql makeutils -c 'CREATE EXTENSION IF NOT EXISTS "uuid-ossp"'
 psql makeutils -c 'CREATE EXTENSION IF NOT EXISTS postgis'
 psql makeutils -c 'CREATE EXTENSION IF NOT EXISTS postgis_topology'
-psql makeutils -c 'CREATE EXTENSION fuzzystrmatch'
-psql makeutils -c 'CREATE EXTENSION postgis_tiger_geocoder'
 
 # Add a starter table for utility data
 psql makeutils -c 'DROP TABLE IF EXISTS utilities'
@@ -36,7 +33,7 @@ mv County_2010Census_DP1.zip census_county/
 cd census_county
 unzip County_2010Census_DP1.zip
 echo 'importing counties'
-ogr2ogr -t_srs "EPSG:4326" -f "PostgreSQL" "PG:dbname=makeutils host=127.0.0.1 port=5432 user=vagrant" County_2010Census_DP1.shp -nln census_county -nlt PROMOTE_TO_MULTI -lco PRECISION=NO
+ogr2ogr -t_srs "EPSG:4326" -f "PostgreSQL" "PG:dbname=makeutils host=127.0.0.1 port=5432" County_2010Census_DP1.shp -nln census_county -nlt PROMOTE_TO_MULTI -lco PRECISION=NO
 echo 'done importing'
 cd ..
 
@@ -48,7 +45,7 @@ mv State_2010Census_DP1.zip census_state/
 cd census_state
 unzip State_2010Census_DP1.zip
 echo 'importing states'
-ogr2ogr -t_srs "EPSG:4326" -f "PostgreSQL" "PG:dbname=makeutils host=127.0.0.1 port=5432 user=vagrant" State_2010Census_DP1.shp -nln census_state -nlt PROMOTE_TO_MULTI -lco PRECISION=NO
+ogr2ogr -t_srs "EPSG:4326" -f "PostgreSQL" "PG:dbname=makeutils host=127.0.0.1 port=5432" State_2010Census_DP1.shp -nln census_state -nlt PROMOTE_TO_MULTI -lco PRECISION=NO
 echo 'done importing'
 cd ..
 
@@ -77,7 +74,12 @@ cd ..
 cd ..
 rm -r intake
 
-# Split into GeoJSON
-ogr2ogr -f "GeoJSON" geojson_territories PG:"host=127.0.0.1 port=5432 dbname=makeutils" utility_territories
+# Split into state-level GeoJSON
+echo 'dividing by state'
+psql makeutils -f sql/state_split.sql
+echo 'converting to geojson'
+ogr2ogr -f "GeoJSON" geojson_territories PG:"host=127.0.0.1 dbname=makeutils"
 
 # All done!
+echo 'all done!'
+
