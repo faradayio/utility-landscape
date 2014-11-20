@@ -9,11 +9,14 @@
 # csvkit (omigod i love this thing)
 
 # Fire this up from the root of the repository
+rm -r geojson_territories
 rm -r intake
+mkdir geojson_territories
 mkdir intake
-cd intake/
+cd intake
 
 # Create the DB and get it ready for spatial awesomness
+dropdb makeutils
 createdb makeutils
 psql makeutils -c 'CREATE EXTENSION IF NOT EXISTS "uuid-ossp"'
 psql makeutils -c 'CREATE EXTENSION IF NOT EXISTS postgis'
@@ -51,9 +54,9 @@ cd ..
 
 # Insert counties, states
 echo 'building usable counties and states'
-psql makeutils -f sql/census_intake.sql
+psql makeutils -f ../sql/census_intake.sql
 
-# - Import utility list from EIA, process it, insert it into places
+# Import utility list from EIA, process it, insert it into places
 echo 'getting the utility list'
 wget -c http://www.eia.gov/electricity/data/eia861/zip/f8612012.zip
 mkdir utilities
@@ -67,7 +70,14 @@ csvclean service_territory_2012.csv
 echo 'importing utilities to places'
 psql makeutils -c "\copy utilities FROM 'service_territory_2012_out.csv' csv header"
 echo 'matching to county membership'
-psql makeutils -f ../sql/utilities_intake.sql
+psql makeutils -f ../../sql/utilities_intake.sql
 cd ..
+
+# Clean up intake files
+cd ..
+rm -r intake
+
+# Split into GeoJSON
+ogr2ogr -f "GeoJSON" geojson_territories PG:"host=127.0.0.1 port=5432 dbname=makeutils" utility_territories
 
 # All done!
