@@ -20,7 +20,7 @@ A repository for creating and maintaining a geospatial representation of U.S. el
 . . . and you're off to the races. 
 
 ## About
-This module is a component of the Faraday data model, valuable to us because it lets our clients operate within the territories of existing utility partners. __Note that this data does not imply that every location within these territories is served by a given utility.__ The [EIA]() provides this inforomation at the county level, and many utilities only cover sub-areas of an indicated county.
+This module is a component of the Faraday data model, valuable to us because it lets our clients operate within the territories of existing utility partners. __Note that this data does not imply that every location within these territories is served by a given utility.__ The [EIA]() provides this information at the county level, and many utilities only cover sub-areas of an indicated county.
 
 This module may require source URL updating as EIA and the Census shift around their data.
 
