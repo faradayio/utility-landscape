@@ -26,7 +26,7 @@ This module may require source URL updating as EIA and the Census shift around t
 
 Get the state-by-state geojson [here](geojson_territories/).
 
-## Contribution wishlist:
+## To-do:
 - [dat](http://dat-data.com/) integration
 - Incorporating state-curated territory data at a greater administrative precision (e.g. [city/neighborhood level](http://www.mass.gov/anf/research-and-tech/it-serv-and-support/application-serv/office-of-geographic-information-massgis/datalayers/pubutil.html))
 - Handle multi-state service territories
